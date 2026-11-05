@@ -71,6 +71,10 @@ def update_ticket_status(ticket_id):
 Non-staff users are sent to the dashboard with a message. `@require_staff`
 already checks the login, so don't stack `@require_login` on top of it.
 
+If the role check itself fails, an expired login clears the session and goes to
+`/login`. A database error keeps the user logged in, logs the error, and sends
+them to the dashboard with "Could not reach the database." (F-006).
+
 ## Handling errors
 
 Database calls can fail. Catch the error and show a plain-English message

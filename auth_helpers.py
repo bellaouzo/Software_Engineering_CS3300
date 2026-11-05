@@ -1,9 +1,12 @@
+import logging
 from functools import wraps
 
 from flask import flash, redirect, session, url_for
-from supabase import AuthError, SupabaseException
+from supabase import AuthError, PostgrestAPIError, SupabaseException
 
 from supabase_client import get_user_client
+
+logger = logging.getLogger(__name__)
 
 
 def require_login(view):
@@ -41,10 +44,16 @@ def require_staff(view):
                 .single()
                 .execute()
             )
-        except (AuthError, SupabaseException):
+        except AuthError:
             session.clear()
             flash("Your login expired. Log in again.", "error")
             return redirect(url_for("auth.login"))
+        except (PostgrestAPIError, SupabaseException):
+            # The database failed, their login is fine, so don't log them out.
+            # PostgrestAPIError used to fall through and crash the page (F-006)
+            logger.exception("Could not check the user's role")
+            flash("Could not reach the database. Try again in a moment.", "error")
+            return redirect(url_for("dashboard.home"))
         # Logged in but not staff, send them home
         if profile.data["role"] != "staff":
             flash("Only staff can open that page.", "error")
