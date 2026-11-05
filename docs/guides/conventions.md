@@ -20,6 +20,11 @@ data) in one function, per Flask convention — don't split these into two route
 - All ticket routes are wired to Supabase. Database errors are caught
   (`PostgrestAPIError`, `SupabaseException`, `AuthError`) and shown as a plain
   flash message; an expired login clears the session and goes to `/login`.
+- **Missing tickets:** routes that take a `<ticket_id>` check it with
+  `_is_ticket_id()` first, and anything that can't find the ticket (bad id,
+  deleted, hidden by RLS) calls `_ticket_not_found()` in `routes/tickets.py`.
+  An `.update()` that comes back with no rows changed nothing, so say "Ticket
+  not found.", never a success message (F-005).
 - Every `flash()` passes a category: `"success"` for things that worked
   ("Ticket submitted.") and `"error"` for anything that failed or was blocked.
   Templates read them with `get_flashed_messages(with_categories=true)`.

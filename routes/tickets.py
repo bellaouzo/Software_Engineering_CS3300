@@ -1,4 +1,5 @@
 import logging
+import uuid
 
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from supabase import AuthError, PostgrestAPIError, SupabaseException
@@ -19,6 +20,7 @@ TICKET_LIST_COLUMNS = "id, title, category, location, status, updated_at, profil
 # Messages we flash when something goes wrong
 DB_ERROR = "Could not reach the database. Try again in a moment."
 LOGIN_EXPIRED = "Your login expired. Log in again."
+TICKET_NOT_FOUND = "Ticket not found."
 
 
 # Their token died, so clear everything and send them back to login
@@ -26,6 +28,22 @@ def _expired_login():
     session.clear()
     flash(LOGIN_EXPIRED, "error")
     return redirect(url_for("auth.login"))
+
+
+# Wrong id, deleted ticket, or one RLS hides from them, all get the same answer
+def _ticket_not_found():
+    flash(TICKET_NOT_FOUND, "error")
+    return redirect(url_for("tickets.list_tickets"))
+
+
+# Ticket ids are UUIDs. Checking first means a typo in the URL gets
+# "Ticket not found" instead of a database error (F-005).
+def _is_ticket_id(ticket_id):
+    try:
+        uuid.UUID(ticket_id)
+    except ValueError:
+        return False
+    return True
 
 
 def _get_role():
@@ -150,6 +168,8 @@ def _add_comment(ticket_id):
 @tickets_bp.route("/tickets/<ticket_id>", methods=["GET", "POST"])
 @require_login
 def ticket_detail(ticket_id):
+    if not _is_ticket_id(ticket_id):
+        return _ticket_not_found()
     # POST means they're adding a comment, GET just shows the ticket
     if request.method == "POST":
         return _add_comment(ticket_id)
@@ -170,8 +190,7 @@ def ticket_detail(ticket_id):
             or ticket.data is None
             or (not is_staff and ticket.data["created_by"] != session["user_id"])
         ):
-            flash("Ticket not found.", "error")
-            return redirect(url_for("tickets.list_tickets"))
+            return _ticket_not_found()
         # role lets the template mark staff replies (any logged-in user can read profiles)
         comments = (
             client.table("comments")
@@ -184,10 +203,8 @@ def ticket_detail(ticket_id):
     except AuthError:
         return _expired_login()
     except (PostgrestAPIError, SupabaseException):
-        # A malformed id (not a UUID) also lands here.
         logger.exception("Could not load ticket %s", ticket_id)
-        flash("Ticket not found.", "error")
-        return redirect(url_for("tickets.list_tickets"))
+        return _ticket_not_found()
     return render_template(
         "ticket_detail.html",
         ticket=ticket.data,
@@ -201,19 +218,30 @@ def ticket_detail(ticket_id):
 @require_staff
 def update_ticket_status(ticket_id):
     # Staff only (Req 2.3.1). Only accept one of the real status values
+    if not _is_ticket_id(ticket_id):
+        return _ticket_not_found()
     status = request.form.get("status", "")
     if status not in TICKET_STATUSES:
         flash("Pick a valid status.", "error")
-    else:
-        try:
-            get_user_client().table("tickets").update({"status": status}).eq(
-                "id", ticket_id
-            ).execute()
-        except AuthError:
-            return _expired_login()
-        except (PostgrestAPIError, SupabaseException):
-            logger.exception("Could not update status for ticket %s", ticket_id)
-            flash(DB_ERROR, "error")
-        else:
-            flash(f"Status changed to {status}.", "success")
+        return redirect(url_for("tickets.ticket_detail", ticket_id=ticket_id))
+    try:
+        updated_rows = (
+            get_user_client()
+            .table("tickets")
+            .update({"status": status})
+            .eq("id", ticket_id)
+            .execute()
+            .data
+        )
+    except AuthError:
+        return _expired_login()
+    except (PostgrestAPIError, SupabaseException):
+        logger.exception("Could not update status for ticket %s", ticket_id)
+        flash(DB_ERROR, "error")
+        return redirect(url_for("tickets.ticket_detail", ticket_id=ticket_id))
+    # Supabase sends back the rows it changed. None means no ticket had this id,
+    # so don't say the status changed (F-005)
+    if not updated_rows:
+        return _ticket_not_found()
+    flash(f"Status changed to {status}.", "success")
     return redirect(url_for("tickets.ticket_detail", ticket_id=ticket_id))
