@@ -19,7 +19,7 @@ the class deliverables and stay out of `guides/`.
   - `setup-and-running.md` - running the app, `dev.py`, `.env`, Git/`gh` setup
   - `conventions.md` - routes, templates, Supabase queries, login, fixed values
   - `naming-conventions.md` - names for files, functions, URLs, CSS, tables
-  - `database-schema.md` - tables, triggers, RLS, known issue, migrations
+  - `database-schema.md` - tables, triggers, RLS, migrations
   - `file-size-and-splitting.md` - line limits per file type and how to split
   - `git-workflow.md` - branches, PRs, and the merge steps
   - `testing.md` - cross-functional testing and Test Plans

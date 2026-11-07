@@ -13,7 +13,7 @@ Statuses, in order: `Submitted` → `Acknowledged` → `In Progress` → `Resolv
 
 | Name | GitHub |
 | --- | --- |
-| Joel | [bellaouzo](https://github.com/bellaouzo) |
+| Joel Brisk | [bellaouzo](https://github.com/bellaouzo) |
 | Joseph Smith | [josephmsmith012-maker](https://github.com/josephmsmith012-maker) |
 | Zachary Yarnell | [ZachYarnell](https://github.com/ZachYarnell) |
 | Max Santomauro | [maxsantomauro](https://github.com/maxsantomauro) |
