@@ -54,6 +54,8 @@ Demo accounts and tickets: `python seed_demo_data.py --db local` (or `live`).
 ## Folder structure
 
 ```
+README.md               # Read-me for the UCCS TA: what it is, team, how to run it, open-source list
+LICENSE                 # MIT License
 app.py                  # Flask app factory (create_app), loads .env, registers routes, /health check
 dev.py                  # One-command interactive launcher (pick local/live DB, start app, open browser)
 seed_demo_data.py       # Adds/removes demo accounts, tickets, comments (admin script, service-role key)
@@ -167,7 +169,10 @@ commit of any change, update the affected docs **in the same branch**:
   links down; each sub-guide links back up.
 - New guide: add it to the table at the top and to `docs/README.md`. Manual
   steps on the live Supabase project get a guide too.
-- Markdown goes in `docs/guides/`. Word docs, PDFs, and spreadsheets stay out
+- Update `README.md` when setup steps, demo accounts, features, or
+  dependencies change (a new package in `requirements.txt` gets a row in its
+  open-source table). It is the TA's copy of that information.
+- Markdown goes in `docs/guides/` (except `README.md` at the root). Word docs, PDFs, and spreadsheets stay out
   (see `docs/README.md`).
 
 Delete notes that are no longer true instead of leaving them beside the new
