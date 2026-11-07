@@ -13,7 +13,7 @@ Statuses, in order: `Submitted` → `Acknowledged` → `In Progress` → `Resolv
 
 | Name | GitHub |
 | --- | --- |
-| Joel | [bellaouzo](https://github.com/bellaouzo) |
+| Joel Brisk | [bellaouzo](https://github.com/bellaouzo) |
 | Joseph Smith | [josephmsmith012-maker](https://github.com/josephmsmith012-maker) |
 | Zachary Yarnell | [ZachYarnell](https://github.com/ZachYarnell) |
 | Max Santomauro | [maxsantomauro](https://github.com/maxsantomauro) |
@@ -41,8 +41,8 @@ You need **Python 3.14** and **Git**. For a private local database you also need
 **Docker Desktop**, plus either the Supabase CLI or Node.js (for `npx supabase`).
 
 ```
-git clone https://github.com/bellaouzo/Software_Engineering_CS3330.git
-cd Software_Engineering_CS3330
+git clone https://github.com/bellaouzo/Software_Engineering_CS3300.git
+cd Software_Engineering_CS3300
 python dev.py        # macOS/Linux: python3 dev.py
 ```
 
@@ -73,8 +73,8 @@ Log in with any of these. The password is `demo-password` for all of them.
 
 `python seed_demo_data.py --db local --remove` deletes the demo data again.
 
-The Render site has its own accounts. To try it, register a new account (it
-starts as a Requester) or ask the team for a staff login.
+The Render site has the same demo accounts, but their password is `password`.
+You can also register a new account there (it starts as a Requester).
 
 ## Where things are
 
