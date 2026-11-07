@@ -41,8 +41,8 @@ You need **Python 3.14** and **Git**. For a private local database you also need
 **Docker Desktop**, plus either the Supabase CLI or Node.js (for `npx supabase`).
 
 ```
-git clone https://github.com/bellaouzo/Software_Engineering_CS3330.git
-cd Software_Engineering_CS3330
+git clone https://github.com/bellaouzo/Software_Engineering_CS3300.git
+cd Software_Engineering_CS3300
 python dev.py        # macOS/Linux: python3 dev.py
 ```
 
