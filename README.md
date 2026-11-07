@@ -73,8 +73,8 @@ Log in with any of these. The password is `demo-password` for all of them.
 
 `python seed_demo_data.py --db local --remove` deletes the demo data again.
 
-The Render site has its own accounts. To try it, register a new account (it
-starts as a Requester) or ask the team for a staff login.
+The Render site has the same demo accounts, but their password is `password`.
+You can also register a new account there (it starts as a Requester).
 
 ## Where things are
 

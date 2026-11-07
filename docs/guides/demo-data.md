@@ -27,7 +27,8 @@ python seed_demo_data.py --db local --tickets 500   # more tickets for load test
 - **Live:** `.env` needs `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` (Supabase
   dashboard > Project Settings > API Keys; ask a teammate). The demo password
   comes from `DEMO_PASSWORD` in `.env`, or the script asks for one (8+
-  characters). Share it with the team, not in the repo.
+  characters). The live demo accounts use `password` (listed in `README.md` for
+  the TA). If you change it, update `README.md` too.
 
 ## What it makes
 
